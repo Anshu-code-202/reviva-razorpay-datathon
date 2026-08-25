@@ -1,3 +1,28 @@
+# Why resolution.py comes next
+
+# approval.py answers:
+
+# "Is a human authorized to allow the recovery?"
+
+# Once the Operations Manager approves, REVIVA needs to record:
+
+# "What recovery action did we actually perform, and what happened?"
+
+# That's the job of resolution.py.  
+
+# for our MVP:
+
+# Incident
+#    ↓
+# Eligibility = ELIGIBLE
+#    ↓
+# Approval = APPROVED
+#    ↓
+# Resolution
+#    ├── action
+#    ├── status
+#    ├── executed_at
+#    └── result
 # Why idempotency_key is critical
 
 # This is one of the most important fields in your whole project:
@@ -9,7 +34,7 @@
 # Same key
 #         ↓
 # Do NOT execute twice
-from datetime import datetime
+from datetime import datetime,timezone
 
 from sqlalchemy import DateTime, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -67,7 +92,7 @@ class Resolution(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=datetime.utcnow,
+        default=lambda:datetime.now(timezone.utc),
     )
 
     incident: Mapped["Incident"] = relationship(
@@ -77,3 +102,4 @@ class Resolution(Base):
     approval: Mapped["Approval"] = relationship(
         "Approval",
     )
+    # Approval is the gate, while Resolution is the execution record.

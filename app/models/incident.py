@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime,timezone
 
 from sqlalchemy import DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -31,9 +31,9 @@ class Incident(Base):
         nullable=False,
         index=True,
     )
-
+# we are defining the type of incident that REVIVA detected.
     type: Mapped[str] = mapped_column(
-        String(100),
+        String(100),#PostgreSQL stores up to 100 characters.
         nullable=False,
     )
 
@@ -47,22 +47,22 @@ class Incident(Base):
     detected_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=datetime.utcnow,
+        default=datetime.now(timezone.utc),
     )
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=datetime.utcnow,
+        default=lambda:datetime.now(timezone.utc),
     )
 
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        default=lambda:datetime.now(timezone.utc),
+        onupdate=lambda:datetime.now(timezone.utc),
     )
-
+# define relationships from an Incident to its Payment and Order
     payment: Mapped["Payment"] = relationship(
         "Payment",
     )

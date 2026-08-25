@@ -4,6 +4,8 @@ from app.models.incident import Incident
 from app.models.eligibility import EligibilityEvaluation
 from app.models.approval import Approval
 from app.models.resolution import Resolution
+from app.models.evidence import Evidence
+from app.models.audit import AuditEvent
 
 __all__ = [
     "Payment",
@@ -12,4 +14,6 @@ __all__ = [
     "EligibilityEvaluation",
     "Approval",
     "Resolution",
+    "Evidence",
+    "AuditEvent",
 ]

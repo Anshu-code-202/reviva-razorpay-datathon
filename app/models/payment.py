@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime,timezone
 from decimal import Decimal
 
 from sqlalchemy import DateTime, Numeric, String
@@ -49,11 +49,11 @@ class Payment(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=datetime.utcnow,
+        default=lambda: datetime.now(timezone.utc),
     )
-
-    order: Mapped["Order | None"] = relationship(
+# This defines the relationship between Payment and Order in SQLAlchemy.
+    order: Mapped["Order | None"] = relationship( #→ This Payment can have one Order or no Order.
     "Order",
-    back_populates="payment",
-    uselist=False,
+    back_populates="payment", #Order model has a corresponding payment relationship.
+    uselist=False,#→ Makes it one-to-one, not one-to-many.
     )

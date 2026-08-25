@@ -18,7 +18,7 @@
 #     ↓
 # When?
 
-from datetime import datetime
+from datetime import datetime,timezone
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -49,16 +49,16 @@ class EligibilityEvaluation(Base):
         nullable=False,
     )
 
-    evaluated_by: Mapped[str] = mapped_column(
+    evaluated_by: Mapped[str] = mapped_column(  #stores who evaluated the incident
         String(50),
         nullable=False,
-        default="SYSTEM",
+        default="SYSTEM", #if we don't provide a value, it automatically becomes "SYSTEM".
     )
 
     evaluated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=datetime.utcnow,
+        default=lambda:datetime.now(timezone.utc),
     )
 
     incident: Mapped["Incident"] = relationship(
