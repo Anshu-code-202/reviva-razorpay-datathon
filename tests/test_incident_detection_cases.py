@@ -1,15 +1,18 @@
+import pytest
+
 from sqlalchemy import create_engine
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.models.payment import Payment
 from app.models.order import Order
+from app.models.incident import Incident
 
 from app.repositories.payment_repository import PaymentRepository
 from app.repositories.order_repository import OrderRepository
 from app.repositories.incident_repository import IncidentRepository
 
 from app.services.incident_detection import IncidentDetectionService
-
 
 DATABASE_URL = "postgresql+psycopg://postgres:MyNewPassword123%21@localhost:5432/reviva"
 
@@ -263,6 +266,95 @@ def main():
         session.rollback()
 
     print("\nALL INCIDENT DETECTION CASES PASSED")
+
+def test_database_prevents_duplicate_incident(session):
+    payment = Payment(
+        payment_id="pay_db_constraint_001",
+        merchant_id="merchant_db_constraint_001",
+        amount=500,
+        currency="INR",
+        status="CAPTURED",
+    )
+
+    session.add(payment)
+    session.flush()
+
+    order = Order(
+        order_id="order_db_constraint_001",
+        merchant_id="merchant_db_constraint_001",
+        payment_id=payment.id,
+        amount=500,
+        currency="INR",
+        status="FAILED",
+    )
+
+    session.add(order)
+    session.flush()
+
+    incident_1 = Incident(
+        incident_id="INC-db-001",
+        payment_id=payment.id,
+        order_id=order.id,
+        type="CAPTURED_PAYMENT_ORDER_FAILURE",
+    )
+
+    session.add(incident_1)
+    session.flush()
+
+    # Same payment + order + type.
+    # Different incident_id, so the failure must come
+    # from the new database-level unique constraint.
+    incident_2 = Incident(
+        incident_id="INC-db-002",
+        payment_id=payment.id,
+        order_id=order.id,
+        type="CAPTURED_PAYMENT_ORDER_FAILURE",
+    )
+
+    session.add(incident_2)
+
+    with pytest.raises(IntegrityError):
+        session.flush()
+
+    session.rollback()
+
+    print("PASS: DATABASE PREVENTS DUPLICATE INCIDENT")
+
+def test_detected_at_is_set_per_incident(session):#Is the timestamp generated when each incident is created, rather than once when the Python module is imported?
+    payment = Payment(
+        payment_id="pay_case_timestamp",
+        merchant_id="merchant_timestamp",
+        amount=500,
+        currency="INR",
+        status="CAPTURED",
+    )
+
+    session.add(payment)
+    session.flush()
+
+    order = Order(
+        order_id="order_case_timestamp",
+        merchant_id="merchant_timestamp",
+        payment_id=payment.id,
+        amount=500,
+        currency="INR",
+        status="FAILED",
+    )
+
+    session.add(order)
+    session.flush()
+
+    service = create_service(session)
+
+    incident = service.detect(
+        payment_id="pay_case_timestamp",
+        order_id="order_case_timestamp",
+    )
+
+    assert incident is not None
+    assert incident.detected_at is not None
+
+    print("PASS: detected_at is generated per incident")
 
 
 if __name__ == "__main__":

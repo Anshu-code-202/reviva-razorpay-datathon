@@ -48,3 +48,20 @@ class IncidentRepository:
         self.session.flush() #sends the INSERT to PostgreSQL without committing the entire transaction yet
         
         return incident
+
+
+#     So IncidentService cannot yet retrieve an incident by its public incident_id or update its status cleanly.
+
+# 1. Extend IncidentRepository
+    def get_by_incident_id(self,incident_id:str)->Incident|None:
+        statement=select(Incident) .where(
+            Incident.incident_id==incident_id)
+        return self.session.scalars(statement).first()
+
+    def update_status( #So the repository becomes responsible for database operations, while the service will decide whether a status transition is allowed.
+            self,incident:Incident,status:str,
+    )->Incident:
+        incident.status=status
+        self.session.flush()
+
+        return incident

@@ -1,3 +1,6 @@
+# IncidentDetectionService answers:
+
+# Should an incident exist?
 # This is the brain of deterministic incident detection.
 
 # # It answers:"""Payment

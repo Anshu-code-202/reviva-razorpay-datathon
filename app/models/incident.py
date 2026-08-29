@@ -5,10 +5,20 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
 
+from sqlalchemy import UniqueConstraint
+
 
 class Incident(Base):
     __tablename__ = "incidents"
 
+    __table_args__ = (
+        UniqueConstraint(
+            "payment_id",
+            "order_id",
+            "type",
+            name="uq_incidents_payment_order_type",
+    ),)
+    
     id: Mapped[int] = mapped_column(
         primary_key=True,
     )
@@ -47,20 +57,20 @@ class Incident(Base):
     detected_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=datetime.now(timezone.utc),
+        default=lambda: datetime.now(timezone.utc),
     )
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=lambda:datetime.now(timezone.utc),
+        default=lambda: datetime.now(timezone.utc),
     )
 
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=lambda:datetime.now(timezone.utc),
-        onupdate=lambda:datetime.now(timezone.utc),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda:  datetime.now(timezone.utc),
     )
 # define relationships from an Incident to its Payment and Order
     payment: Mapped["Payment"] = relationship(
