@@ -27,6 +27,7 @@ def upgrade() -> None:
     sa.Column('source_system', sa.String(length=50), nullable=False),
     sa.Column('source_event_id', sa.String(length=100), nullable=False),
     sa.Column('event_type', sa.String(length=100), nullable=False),
+
     sa.Column('occurred_at', sa.DateTime(timezone=True), nullable=False),
     sa.Column('payload_details', sa.Text(), nullable=False),
     sa.PrimaryKeyConstraint('id')

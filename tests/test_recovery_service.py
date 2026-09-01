@@ -1,3 +1,38 @@
+            #       REVIVA
+            #            │
+            #  ┌─────────▼─────────┐
+            #  │ Incident Detection│
+            #  └─────────┬─────────┘
+            #            ↓
+            #  ┌───────────────────┐
+            #  │ Incident Service  │
+            #  └─────────┬─────────┘
+            #            ↓
+            #  ┌───────────────────┐
+            #  │ Eligibility       │
+            #  │ Deterministic     │
+            #  └─────────┬─────────┘
+            #            ↓
+            #  ┌───────────────────┐
+            #  │ Human Approval    │
+            #  └─────────┬─────────┘
+            #            ↓
+            #  ┌───────────────────┐
+            #  │ Recovery Service  │
+            #  │ • eligibility     │
+            #  │ • approval        │
+            #  │ • idempotency     │
+            #  └─────────┬─────────┘
+            #            ↓
+            #  ┌───────────────────┐
+            #  │ Resolution        │
+            #  └─────────┬─────────┘
+            #            ↓
+            #  ┌───────────────────┐
+            #  │ Audit Event       │
+            #  └───────────────────┘
+
+                
 from app.models.approval import Approval
 from app.models.incident import Incident
 from app.models.eligibility import EligibilityEvaluation

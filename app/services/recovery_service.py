@@ -48,7 +48,7 @@ class RecoveryService:
     ) -> Resolution | None:
 
         # ---------------------------------------------------------
-        # 1. Verify eligibility
+        # 1. Verify eligibility: Verify that the incident has passed automated safety and eligibility checks.
         # ---------------------------------------------------------
 
         evaluation = (
@@ -64,7 +64,7 @@ class RecoveryService:
             return None
 
         # ---------------------------------------------------------
-        # 2. Verify human approval
+        # 2. Verify human approval:2. Confirm an explicit 'APPROVED' decision exists from an authorized human operator.
         # ---------------------------------------------------------
 
         approval = (
@@ -80,7 +80,7 @@ class RecoveryService:
             return None
 
         # ---------------------------------------------------------
-        # 3. Check idempotency
+        # 3. Check idempotency:Prevent duplicate executions by checking if a resolution already exists for this key or incident.
         # ---------------------------------------------------------
 
         existing_resolution = (
@@ -103,7 +103,7 @@ class RecoveryService:
             return existing_incident_resolution
 
         # ---------------------------------------------------------
-        # 4. Create Resolution
+        # 4. Create Resolution:Execute the recovery action (e.g., reprocessing order confirmation) and record its outcome.
         # ---------------------------------------------------------
 
         resolution = self.resolution_repository.create(
@@ -122,7 +122,7 @@ class RecoveryService:
         self.resolution_repository.session.flush()
 
         # ---------------------------------------------------------
-        # 5. Create AuditEvent
+        # 5. Create AuditEvent:Log an immutable audit event recording who/what triggered the recovery for compliance.
         # ---------------------------------------------------------
 
         self.audit_event_repository.create(
