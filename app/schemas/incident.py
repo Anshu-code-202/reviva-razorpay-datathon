@@ -28,3 +28,8 @@ class IncidentDetectionResponse(BaseModel):
     type: str
     status: str
     created_at: datetime
+
+
+class IncidentClassificationResponse(BaseModel):
+    incident_id: str
+    recommendation: str
