@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 
@@ -296,7 +296,7 @@ export default function Home() {
 
         {actionMessage && (
           <div className="mb-5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-300">
-            ✓ {actionMessage}
+            âœ“ {actionMessage}
           </div>
         )}
 
@@ -328,7 +328,7 @@ export default function Home() {
               <Card title="Payment">
                 <StatusRow
                   label="Amount"
-                  value="₹500 INR"
+                  value="â‚¹500 INR"
                 />
 
                 <StatusRow
@@ -339,7 +339,7 @@ export default function Home() {
 
                 <StatusRow
                   label="Payment ID"
-                  value="pay_test_001"
+                  value="pay_demo_001"
                   mono
                 />
               </Card>
@@ -347,7 +347,7 @@ export default function Home() {
               <Card title="Order">
                 <StatusRow
                   label="Order ID"
-                  value="order_test_001"
+                  value="order_demo_001"
                   mono
                 />
 
@@ -489,7 +489,7 @@ export default function Home() {
                 {isRecovered && (
                   <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4">
                     <p className="font-semibold text-emerald-300">
-                      ✓ Recovery completed
+                      âœ“ Recovery completed
                     </p>
 
                     <p className="mt-1 text-xs text-slate-400">
@@ -531,7 +531,7 @@ export default function Home() {
                         className="flex gap-4"
                       >
                         <div className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
-                          ✓
+                          âœ“
                         </div>
 
                         <div>
@@ -633,3 +633,4 @@ function StatusRow({
     </div>
   );
 }
+
