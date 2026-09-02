@@ -26,6 +26,8 @@ domain services, database, eligibility, approval, recovery, and
 idempotency boundaries work together.
 """
 
+from app.models.audit import AuditEvent
+
 import uuid
 from datetime import datetime, timezone
 from decimal import Decimal
@@ -161,3 +163,33 @@ def test_api_end_to_end_recovery():
     finally:
         session.rollback()
         session.close()
+
+                # ---------------------------------------------------------
+        # 7. Verify audit trail in the database
+        # ---------------------------------------------------------
+
+        audit_session = SessionLocal()
+
+        try:
+            audit_events = (
+                audit_session.query(AuditEvent)
+                .filter(AuditEvent.incident_id == incident["id"])
+                .all()
+            )
+
+            assert len(audit_events) == 1
+
+            audit_event = audit_events[0]
+
+            assert audit_event.event_type == "RECOVERY_EXECUTED"
+            assert audit_event.actor_type == "SYSTEM"
+            assert audit_event.actor_id is None
+            assert audit_event.incident_id == incident["id"]
+
+            assert (
+                "REPROCESS_ORDER_CONFIRMATION"
+                in audit_event.description
+            )
+
+        finally:
+            audit_session.close()

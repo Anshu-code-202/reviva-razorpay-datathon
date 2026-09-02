@@ -22,6 +22,7 @@ class IncidentDetectionResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    incident_id: str
     payment_id: int
     order_id: int
     type: str
