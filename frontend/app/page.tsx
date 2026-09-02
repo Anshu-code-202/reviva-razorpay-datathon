@@ -9,6 +9,18 @@ type Incident = {
   incident_id: string;
   type: string;
   status: string;
+  payment: {
+    payment_id: string;
+    amount: string;
+    currency: string;
+    status: string;
+  };
+  order: {
+    order_id: string;
+    amount: string;
+    currency: string;
+    status: string;
+  };
 };
 
 type Classification = {
@@ -328,18 +340,18 @@ export default function Home() {
               <Card title="Payment">
                 <StatusRow
                   label="Amount"
-                  value="â‚¹500 INR"
+                  value={`₹${incident.payment.amount} ${incident.payment.currency}`}
                 />
 
                 <StatusRow
                   label="Payment status"
-                  value="CAPTURED"
+                  value={incident.payment.status}
                   success
                 />
 
                 <StatusRow
                   label="Payment ID"
-                  value="pay_demo_001"
+                  value={incident.payment.payment_id}
                   mono
                 />
               </Card>
@@ -347,13 +359,13 @@ export default function Home() {
               <Card title="Order">
                 <StatusRow
                   label="Order ID"
-                  value="order_demo_001"
+                  value={incident.order.order_id}
                   mono
                 />
 
                 <StatusRow
                   label="Order status"
-                  value="FAILED"
+                  value={incident.order.status}
                   warning
                 />
 
@@ -387,8 +399,9 @@ export default function Home() {
               <Card title="Safety & Eligibility">
                 <StatusRow
                   label="Payment captured"
-                  value="PASS"
-                  success
+                  value={incident.payment.status === "CAPTURED" ? "PASS" : "FAIL"}
+                  success={incident.payment.status === "CAPTURED"}
+                  warning={incident.payment.status !== "CAPTURED"}
                 />
 
                 <StatusRow
@@ -399,8 +412,9 @@ export default function Home() {
 
                 <StatusRow
                   label="Order remains failed"
-                  value="PASS"
-                  success
+                  value={incident.order.status === "FAILED" ? "PASS" : "FAIL"}
+                  success={incident.order.status === "FAILED"}
+                  warning={incident.order.status !== "FAILED"}
                 />
 
                 <StatusRow
@@ -633,4 +647,13 @@ function StatusRow({
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
 
