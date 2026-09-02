@@ -29,6 +29,13 @@ from app.schemas.incident import (
     IncidentDetectionRequest,
     IncidentDetectionResponse,
 )
+from app.repositories.audit_event_repository import AuditEventRepository
+from app.schemas.incident import (
+    AuditEventResponse,
+    IncidentDetailResponse,
+)
+
+
 from app.services.incident_detection import IncidentDetectionService
 from app.services.incident_service import IncidentService
 
@@ -111,3 +118,69 @@ def classify_incident(
         incident_id=incident.incident_id,
         recommendation=recommendation.value,
     )
+
+
+
+
+@router.get(
+    "/{incident_id}",
+    response_model=IncidentDetailResponse,
+)
+def get_incident(
+    incident_id: str,
+    session: Session = Depends(get_session),
+):
+    incident_repository = IncidentRepository(session)
+
+    incident = incident_repository.get_by_incident_id(incident_id)
+
+    if incident is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Incident not found.",
+        )
+
+    return incident
+
+
+@router.get(
+    "/{incident_id}/audit",
+    response_model=list[AuditEventResponse],
+)
+def get_incident_audit(
+    incident_id: str,
+    session: Session = Depends(get_session),
+):
+    incident_repository = IncidentRepository(session)
+
+    incident = incident_repository.get_by_incident_id(incident_id)
+
+    if incident is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Incident not found.",
+        )
+
+    audit_repository = AuditEventRepository(session)
+
+    return audit_repository.get_by_incident_id(incident.id)
+
+
+
+"""                    REVIVA API
+                        │
+              ┌─────────┴─────────┐
+              │                   │
+           WRITE                 READ
+              │                   │
+       ┌──────┴──────┐       ┌────┴─────┐
+       │             │       │          │
+     Detect       Classify  Incident   Audit
+       │             │       │          │
+       └──────┬──────┘       └────┬─────┘
+              │                   │
+         Eligibility              │
+              │                   │
+           Approval               │
+              │                   │
+           Recovery ──────────────┘"""

@@ -1,3 +1,26 @@
+"""                    REVIVA
+                       │
+        ┌──────────────┴──────────────┐
+        ↓                             ↓
+ Payment/Order                  AI Classification
+        │                             │
+        ↓                             ↓
+ Incident Detection             Bounded Enum
+        │                             │
+        ↓                             │
+ Eligibility ◄────────────────────────┘
+        │
+        ↓
+ Human Approval
+        │
+        ↓
+ Guardrails + Idempotency
+        │
+        ↓
+ Recovery
+        │
+        ↓
+ Audit"""
 from enum import Enum
 
 from app.models.incident import Incident
