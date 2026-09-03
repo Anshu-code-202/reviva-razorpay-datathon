@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 
 const API_BASE = "http://127.0.0.1:8000";
-const INCIDENT_ID = "INC-pay_demo_001-order_demo_001";
 
+const INCIDENT_ID = "INC-pay_live_002-order_live_002";
 type Incident = {
   incident_id: string;
   type: string;
@@ -308,7 +308,7 @@ export default function Home() {
 
         {actionMessage && (
           <div className="mb-5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-300">
-            âœ“ {actionMessage}
+            ✓ {actionMessage}
           </div>
         )}
 
@@ -503,7 +503,7 @@ export default function Home() {
                 {isRecovered && (
                   <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4">
                     <p className="font-semibold text-emerald-300">
-                      âœ“ Recovery completed
+                      ✓ Recovery completed
                     </p>
 
                     <p className="mt-1 text-xs text-slate-400">
@@ -545,7 +545,7 @@ export default function Home() {
                         className="flex gap-4"
                       >
                         <div className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
-                          âœ“
+                          ✓
                         </div>
 
                         <div>

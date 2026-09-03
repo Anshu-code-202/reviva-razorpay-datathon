@@ -67,3 +67,37 @@ def recover_incident(
     db.commit()
 
     return resolution
+
+@router.get(
+    "/{incident_id}/recovery",
+    response_model=RecoveryResponse,
+)
+def get_recovery(
+    incident_id: str,
+    db: Session = Depends(get_db),
+):
+    incident_repository = IncidentRepository(db)
+
+    incident = incident_repository.get_by_incident_id(
+        incident_id
+    )
+
+    if incident is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Incident not found.",
+        )
+
+    resolution_repository = ResolutionRepository(db)
+
+    resolution = resolution_repository.get_by_incident_id(
+        incident.id
+    )
+
+    if resolution is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No recovery found for this incident.",
+        )
+
+    return resolution

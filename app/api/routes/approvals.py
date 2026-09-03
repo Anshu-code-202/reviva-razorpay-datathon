@@ -67,3 +67,37 @@ def approve_incident(
             status_code=400,
             detail=str(exc),
         )
+
+@router.get(
+    "/{incident_id}/approval",
+    response_model=ApprovalResponse,
+)
+def get_approval(
+    incident_id: str,
+    db: Session = Depends(get_db),
+):
+    incident_repository = IncidentRepository(db)
+
+    incident = incident_repository.get_by_incident_id(
+        incident_id
+    )
+
+    if incident is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Incident not found.",
+        )
+
+    approval_repository = ApprovalRepository(db)
+
+    approval = approval_repository.get_latest_by_incident(
+        incident.id
+    )
+
+    if approval is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No approval found for this incident.",
+        )
+
+    return approval
